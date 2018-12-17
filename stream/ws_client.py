@@ -41,7 +41,7 @@ class WSClient:
         header = []
         self._connected = False
         self._channels = {}
-        self._all = ""
+        self._all = b""
 
         # We just need to pass the Authorization, ignore all the other
         # http headers we get from the generated code
@@ -147,7 +147,7 @@ class WSClient:
         channels mapped for each input.
         """
         out = self._all
-        self._all = ""
+        self._all = b""
         self._channels = {}
         return out
 
@@ -175,10 +175,8 @@ class WSClient:
                 return
             elif op_code == ABNF.OPCODE_BINARY or op_code == ABNF.OPCODE_TEXT:
                 data = frame.data
-                if six.PY3:
-                    data = data.decode("utf-8")
                 if len(data) > 1:
-                    channel = ord(data[0])
+                    channel = data[0]
                     data = data[1:]
                     if data:
                         if channel in [STDOUT_CHANNEL, STDERR_CHANNEL]:
